@@ -3,9 +3,9 @@ package main
 
 func main() {
 	todos := Todos{}
-	todos.add("Buy Milk")
-	todos.add("Shop Grocery")
-	todos.toggle(0)
-	todos.print()
-	
+	storage := NewStorage[Todos]("ToDos.json")
+	storage.Load(&todos)
+	cmdFlags:= NewCmdFlags()
+	cmdFlags.Execute(&todos)
+	storage.Save(todos)	
 }

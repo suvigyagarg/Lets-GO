@@ -45,7 +45,7 @@ func (todos *Todos) delete(index int) error {
 		return err
 	 }
 	
-	 *todos = append(t[:index], t[:index+1]...)
+	 *todos = append(t[:index], t[index+1:]...)
 	 return nil 
 }
 
