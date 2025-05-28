@@ -6,13 +6,10 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
 	"strings"
-
-	"github.com/google/generative-ai-go/genai"
+	"google.golang.org/genai"
 	"github.com/spf13/cobra"
-	"google.golang.org/api/option"
 )
 
 
@@ -20,21 +17,24 @@ func getResponse(args [] string) {
 
 	userArgs := strings.Join(args[0:]," ")
     ctx := context.Background()
-    client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_API_KEY")))
-    if err != nil {
-        log.Fatal(err)
-    }
-    defer client.Close()
+  client, _ := genai.NewClient(ctx, &genai.ClientConfig{
+      APIKey:  os.Getenv("GEMINI_API_KEY"),
+      Backend: genai.BackendGeminiAPI,
+  })
 
-    model := client.GenerativeModel("gemini-1.5-flash")
-    resp, err := model.GenerateContent(ctx, genai.Text(userArgs))
-    if err != nil {
-        log.Fatal(err)
-    }
+  stream := client.Models.GenerateContentStream(
+      ctx,
+      "gemini-2.0-flash",
+      genai.Text(userArgs),
+      nil,
+  )
 
-    fmt.Println(resp.Candidates[0].Content.Parts[0])
+  for chunk := range stream {
+      part := chunk.Candidates[0].Content.Parts[0]
+      fmt.Print(part.Text)
+  }
+   
 }
-
 
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{

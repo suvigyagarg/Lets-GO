@@ -31,7 +31,7 @@ func( todos *Todos) add(title string){
 
 func (todos *Todos) validateIndex (index int ) error{
  if index <0 || index>= len(*todos){
-	err :=errors.New("Invalid Index")
+	err :=errors.New("invalid Index")
 	fmt.Println(err)
 	return err
  }
@@ -79,7 +79,7 @@ func (todos *Todos) print(){
   table := table.New(os.Stdout)
 
   table.SetRowLines(false)		
-  table.SetHeaders("#","Title","Completed", "CreatedAt","CompletedAt")
+  table.SetHeaders("#","Title", "CreatedAt","CompletedAt","Completed")
 
  for index ,t := range *todos{
 	completed := "❌"
@@ -88,16 +88,14 @@ func (todos *Todos) print(){
 	if t.Completed{
 		completed ="✅"
 		if t.CompletedAt != nil {
-			completedAt = t.CompletedAt.Format(time.RFC1123)
+			completedAt = t.CompletedAt.Format(time.RFC822)
 		}
 	}
-	table.AddRow(strconv.Itoa(index) ,t.Title ,completed, t.CreatedAt.Format(time.RFC1123) ,completedAt )
+	table.AddRow(strconv.Itoa(index) ,t.Title , t.CreatedAt.Format(time.RFC822) ,completedAt ,completed )
 
  }
 
  table.Render()
 
 }
-
-
 
