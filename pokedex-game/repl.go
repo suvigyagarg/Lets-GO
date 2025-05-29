@@ -5,18 +5,19 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
 )
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
 var commands map[string]cliCommand
 
 
-func startRepl() {
+func startRepl(cfg *config) {
 	reader := bufio.NewScanner(os.Stdin)
 	commands = map[string]cliCommand{
 		"exit": {
@@ -28,6 +29,16 @@ func startRepl() {
 			name:        "help",
 			description: "Displays a help message",
 			callback:    commandHelp,
+		},
+		"map":{
+           name: "map",
+		   description: "List name of 20 location area in Pokemon World",
+		   callback: commandMap,
+		},
+		"mapb":{
+           name: "mapb",
+		   description: "List name of 20 location area in Pokemon World you previously viewed",
+		   callback: commandMapBack,
 		},
 	}
 	for {
@@ -47,7 +58,7 @@ func startRepl() {
 			continue
 		}
 
-		err := command.callback()
+		err := command.callback(cfg)
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
@@ -60,21 +71,8 @@ func cleanInput(text string) []string {
 	return words
 }
 
-func commandExit() error {
-	fmt.Println("Closing the Pokedex... Goodbye!")
-	os.Exit(0)
-	return nil 
-}
 
-func commandHelp() error {
-fmt.Println("Welcome to the Pokedex!")
-fmt.Println("Usage:")
-fmt.Println(" ")
-for _,cmd := range commands{
-	fmt.Printf("  %s : %s\n", cmd.name, cmd.description)
-}
 
-	return nil
-}
+
 
 
