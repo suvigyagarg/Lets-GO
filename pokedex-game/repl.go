@@ -11,7 +11,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config ,...string) error
 }
 
 var commands map[string]cliCommand
@@ -40,6 +40,11 @@ func startRepl(cfg *config) {
 		   description: "List name of 20 location area in Pokemon World you previously viewed",
 		   callback: commandMapBack,
 		},
+		"explore":{
+           name: "explore <location_area>",
+		   description: "List all the Pokemons in a location area",
+		   callback: commandExplore,
+		},
 	}
 	for {
 		fmt.Print("Pokedex > ")
@@ -51,6 +56,10 @@ func startRepl(cfg *config) {
 		}
 
 		commandName := words[0]
+		args := []string{}
+		if len(words)>1{
+			args = words[1:]
+		}
 		command, exists := commands[commandName]
 
 		if !exists {
@@ -58,7 +67,7 @@ func startRepl(cfg *config) {
 			continue
 		}
 
-		err := command.callback(cfg)
+		err := command.callback(cfg ,args...)
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
