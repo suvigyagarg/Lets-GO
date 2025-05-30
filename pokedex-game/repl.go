@@ -45,6 +45,22 @@ func startRepl(cfg *config) {
 		   description: "List all the Pokemons in a location area",
 		   callback: commandExplore,
 		},
+		"catch":{
+           name: "catch <pokemon_name>",
+		   description: "Catch a pokemon",
+		   callback: commandCatch,
+		},
+		"inspect":{
+           name: "inspect <pokemon_name>",
+		   description: "ispect about a caught pokemon",
+		   callback: commandInspect,
+		},
+		"pokedex":{
+           name: "pokedex",
+		   description: "List all the pokemons caught",
+		   callback: commandPokedex,
+		},
+		
 	}
 	for {
 		fmt.Print("Pokedex > ")
@@ -69,7 +85,7 @@ func startRepl(cfg *config) {
 
 		err := command.callback(cfg ,args...)
 		if err != nil {
-			fmt.Println("Error:", err)
+			fmt.Println(err)
 		}
 	}
 }
